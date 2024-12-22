@@ -62,6 +62,9 @@ testSplits = mmp.myModelParameters.kFoldPartition(selectionSet, k)
 listOfDict = []
 listOfLog = []
 
+validationFromIperParam = {}
+
+
 for numSplit, kfolSplit in enumerate(testSplits):
 
     print(f"k fold number: {numSplit}")
@@ -76,8 +79,27 @@ for numSplit, kfolSplit in enumerate(testSplits):
     y_Validation = vlSetFold[:, -3:]
 
     resultOptIperParam, log = mmp.myModelParameters.doGridSearch(x_Training, x_Validation, y_Training, y_Validation, [12,7,5,3], ['elu','elu','linear'], task = 'regression')
+
+    # resultOptIperParam[(eta0, etaFinal, Lambda, Alpha, epochs)] = (trainError, valError, optWeights, model.get_list_init_weight_matrices())
+
+    for key in resultOptIperParam.keys():
+        valError = resultOptIperParam[key][1]
+        trError = resultOptIperParam[key][0]
+        if numSplit == 0:
+            validationFromIperParam[key] = ((valError / k), trError / k)
+        else :
+            validationFromIperParam[key] = (validationFromIperParam[key][0] + (valError / k), validationFromIperParam[key][1] + (trError / k))
+
     listOfDict.append(resultOptIperParam)
     listOfLog.append(log)
+
+
+
+with open("k_fold_result.txt", "w") as file:
+    for key in validationFromIperParam.keys():
+        file.write(f"keys: {key}  (Val error: {validationFromIperParam[key][0]} ,  TR error: {validationFromIperParam[key][1]})\n")
+
+
 
 
 for dict in listOfDict:
