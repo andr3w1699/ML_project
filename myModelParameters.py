@@ -75,20 +75,19 @@ class myModelParameters:
         rangeAlpha = [0.8, 0.9]
         rangeEpochs = [10, 20]
         """
-        """
-        good for ml cup
-        rangeEta0 = [0.001]
-        rangeLambda = [0.0001]
-        rangeAlpha = [0.5]
-        rangeEpochs = [500]
-        rangeEtaFinal = [0.001]
-        """
-        rangeEta0 = [0.3]
-        rangeLambda = [0.001]
-        rangeAlpha = [0]
-        rangeEpochs = [1000]
-        rangeEtaFinal = [0.3]
+        
+        # good for ml cup
+        rangeEta0 = [0.001, 0.01]
+        rangeLambda = [0.0001, 0.001]
+        rangeAlpha = [0.5, 0.3]
+        rangeEpochs = [500, 1000]
+        rangeEtaFinal = [0.001, 0.01]
+        rangeTau = [100, 500]
+        rangeinitModes = ["random", "xavier"]
+        rangeRandomRestarts = [5, 10, 20]
+        rangeMiniBatch = [1, None, 32, 64]
 
+        
         # instantiate the neural network  units_for_levels, activation, VariableLROption = False, eta0=0.8, eta_tau=0.5, tau=100, lambda_reg=0.01, alpha = 0.9
 
 
@@ -97,46 +96,50 @@ class myModelParameters:
 
         optModel = None
         # start with learning rate
-        for idxEta0, eta0 in enumerate(rangeEta0):
-            for idxetaF, etaFinal in enumerate(rangeEtaFinal):
-                for idxLambda , Lambda in enumerate(rangeLambda):
-                    for idxAlpha, Alpha in enumerate(rangeAlpha):
-                        for idxepochs, epochs in enumerate(rangeEpochs):
+        for idxMiniBatch, miniBatch in enumerate(rangeMiniBatch):
+            for idxRandomRestart, randomRestart in enumerate(rangeRandomRestarts):
+                for idxTau, tau in enumerate(rangeTau) :
+                    for idxInitMode, mode in enumerate(rangeinitModes) : 
+                        for idxEta0, eta0 in enumerate(rangeEta0):
+                            for idxetaF, etaFinal in enumerate(rangeEtaFinal):
+                                for idxLambda , Lambda in enumerate(rangeLambda):
+                                    for idxAlpha, Alpha in enumerate(rangeAlpha):
+                                        for idxepochs, epochs in enumerate(rangeEpochs):
 
-                            print(f"idxs combination: idxEta0 : {idxEta0} , idxetaF : {idxetaF} , idxLambda : {idxLambda} , idxAlpha : {idxAlpha} , idxepochs : {idxepochs}")
+                                            print(f"idxs combination: idxMiniBatch : {idxMiniBatch}, idxRandomRestart: {idxRandomRestart}, idxTau : {idxTau} , idxInitMode : {idxInitMode},  idxEta0 : {idxEta0} , idxetaF : {idxetaF} , idxLambda : {idxLambda} , idxAlpha : {idxAlpha} , idxepochs : {idxepochs}")
+                                            
+                                            prm = myModelParameters(None, units_for_levels, activation, True, eta0, etaFinal, tau , Lambda, Alpha, False , task)
+                                            model = NeuralNetwork(prm)
+                                            
+
+                                            trainError, LogsTR = model.train(xTrain, yTrain, epochs, miniBatch, 0.0001, mode, randomRestart, False, None, None)
+                                            
+                                            if task == 'classification':
+                                                #for classification 
+                                                result = model.predict_class(xValid, False, activation[-1], None )
+                                                valError = model.classification_error(yValid, result, activation[-1])
+                                            else:
+                                                #for regression
+                                                result = model.predict(xValid, False, None)
+                                                valError = model.mean_squared_error_loss(yValid, result)
+                                                
+                                                
+                                            optWeights = model.getOptimalWeights()
+                                            resultOptIperParam[(eta0, etaFinal, Lambda, Alpha, epochs, mode, tau, randomRestart, miniBatch)] = (trainError, valError, optWeights, model.get_list_init_weight_matrices())
+
+                                            if valError < optimalValue[1] :
+                                                optimalValue = (trainError, valError, optWeights)
+                                                optimalKeys = (eta0, etaFinal, Lambda, Alpha, epochs)
+                                                optModel = model
+                                                optLogsTR = LogsTR
+                                                startWeightsForOptimalTraining = optModel.get_list_init_weight_matrices()
+
+
                             
-                            prm = myModelParameters(None, units_for_levels, activation, True, eta0, etaFinal, 100 , Lambda, Alpha, False , task)
-                            model = NeuralNetwork(prm)
-                            
-
-                            trainError, LogsTR = model.train(xTrain, yTrain, epochs, 32, 0.0001, "xavier", 5, False, None, None)
-                            
-                            if task == 'classification':
-                                #for classification 
-                                result = model.predict_class(xValid, False, activation[-1], None )
-                                valError = model.classification_error(yValid, result, activation[-1])
-                            else:
-                                #for regression
-                                result = model.predict(xValid, False, None)
-                                valError = model.mean_squared_error_loss(yValid, result)
-                                
-                                
-                            optWeights = model.getOptimalWeights()
-                            resultOptIperParam[(eta0, etaFinal, Lambda, Alpha, epochs)] = (trainError, valError, optWeights, model.get_list_init_weight_matrices())
-
-                            if valError < optimalValue[1] :
-                                optimalValue = (trainError, valError, optWeights)
-                                optimalKeys = (eta0, etaFinal, Lambda, Alpha, epochs)
-                                optModel = model
-                                optLogsTR = LogsTR
-                                startWeightsForOptimalTraining = optModel.get_list_init_weight_matrices()
-
-
-                            
 
 
 
-
+        """
         # retraining model with best hiperparameters
         # weights, units_for_levels, activation, VariableLROption = False, eta0=0.8, eta_tau=0.5, tau=100, lambda_reg=0.01, alpha = 0.9, validationErrorCheck = False, task = None
         modelToBuildValidationError = NeuralNetwork(myModelParameters(startWeightsForOptimalTraining, units_for_levels, activation, True, optimalKeys[0], optimalKeys[1], 100, optimalKeys[2], optimalKeys[3], True, task = 'classification'))
@@ -173,5 +176,6 @@ class myModelParameters:
 
 
         return optModel, resultOptIperParam, optimalKeys, optimalValue, LogsTR, logVL
+        """
 
-        #return resultOptIperParam, optLogsTR
+        return resultOptIperParam, optLogsTR
