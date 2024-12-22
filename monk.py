@@ -87,7 +87,7 @@ else :
         
         #  optModel, resultOptIperParam, optimalKeys, optimalValue, LogsTR, logVL
 
-        modelWithGridSearch, result, optimalKeys, optimalValue, optLogsTR, logVL = mmp.myModelParameters.doGridSearch(x, x_test, y, y_test, [17,4,1], ['tanh', 'sigmoid'], task = 'classification')
+        modelWithGridSearch, result, optimalKeys, optimalValue, optLogsTR, logVL = mmp.myModelParameters.doGridSearch(x, x_test, y, y_test, [17,4,1], ['sigmoid', 'linear'], task = 'classification')
         xasses = []
         yasses = []
         xassesVL = []

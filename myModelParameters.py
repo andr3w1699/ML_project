@@ -75,19 +75,20 @@ class myModelParameters:
         rangeAlpha = [0.8, 0.9]
         rangeEpochs = [10, 20]
         """
-        """
-        good for ml cup
-        rangeEta0 = [0.001]
+        
+        rangeEta0 = [0.001 ]
         rangeLambda = [0.0001]
-        rangeAlpha = [0.5]
-        rangeEpochs = [500]
-        rangeEtaFinal = [0.001]
-        """
-        rangeEta0 = [0.3]
-        rangeLambda = [0.001]
-        rangeAlpha = [0]
+        rangeAlpha = [0.9]
         rangeEpochs = [1000]
-        rangeEtaFinal = [0.3]
+        rangeEtaFinal = [0.001]
+        
+        """
+        rangeEta0 = [0.8]
+        rangeLambda = [0.001]
+        rangeAlpha = [0.9]
+        rangeEpochs = [500]
+        rangeEtaFinal = [0.8]
+        """
 
         # instantiate the neural network  units_for_levels, activation, VariableLROption = False, eta0=0.8, eta_tau=0.5, tau=100, lambda_reg=0.01, alpha = 0.9
 
@@ -109,7 +110,7 @@ class myModelParameters:
                             model = NeuralNetwork(prm)
                             
 
-                            trainError, LogsTR = model.train(xTrain, yTrain, epochs, 32, 0.0001, "xavier", 5, False, None, None)
+                            trainError, LogsTR = model.train(xTrain, yTrain, epochs, 32, 0.0001, "xavier", 20, False, None, None)
                             
                             if task == 'classification':
                                 #for classification 
@@ -134,7 +135,7 @@ class myModelParameters:
 
                             
 
-
+        """
 
 
         # retraining model with best hiperparameters
@@ -173,5 +174,6 @@ class myModelParameters:
 
 
         return optModel, resultOptIperParam, optimalKeys, optimalValue, LogsTR, logVL
+        """
 
-        #return resultOptIperParam, optLogsTR
+        return resultOptIperParam, optLogsTR

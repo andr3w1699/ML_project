@@ -75,7 +75,7 @@ for numSplit, kfolSplit in enumerate(testSplits):
     x_Validation = vlSetFold[:, :-3]
     y_Validation = vlSetFold[:, -3:]
 
-    resultOptIperParam, log = mmp.myModelParameters.doGridSearch(x_Training, x_Validation, y_Training, y_Validation, [12,7,5,3], ['elu','elu','linear'], task = 'regression')
+    resultOptIperParam, log = mmp.myModelParameters.doGridSearch(x_Training, x_Validation, y_Training, y_Validation, [12,32,32,16,16,8,3], ['elu','elu','elu','elu','elu','linear'], task = 'regression')
     listOfDict.append(resultOptIperParam)
     listOfLog.append(log)
 

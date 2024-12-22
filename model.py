@@ -61,14 +61,14 @@ class NeuralNetwork():
 
         weightMatricesList = []
         for i in range(self.numberOfLevels): 
-            weightMatricesList.append(self.random_matrix(self.units_for_levels[i], self.units_for_levels[i+1], -0.05, 0.05))
+            weightMatricesList.append(self.random_matrix(self.units_for_levels[i]+1, self.units_for_levels[i+1], -0.05, 0.05))
         return weightMatricesList
 
     def getXavierWeights(self):
 
         weightMatricesList = []
         for i in range(self.numberOfLevels): 
-            weightMatricesList.append(self.random_matrix(self.units_for_levels[i], self.units_for_levels[i+1], -1/np.sqrt(self.units_for_levels[i]), 1/np.sqrt(self.units_for_levels[i])))
+            weightMatricesList.append(self.random_matrix(self.units_for_levels[i]+1, self.units_for_levels[i+1], -1/np.sqrt(self.units_for_levels[i]), 1/np.sqrt(self.units_for_levels[i])))
         return weightMatricesList
 
 
@@ -204,6 +204,8 @@ class NeuralNetwork():
     def feedForeward (self, inputX, listOfWeights):
 
         localInputX = inputX
+        # Aggiungere una colonna di 1 all'inizio
+        localInputX = np.hstack((np.ones((inputX.shape[0], 1)), inputX))
         self.listOfHiddenRepr = []
         self.listOfNet = []
 
@@ -215,6 +217,8 @@ class NeuralNetwork():
             self.listOfNet.append(localInputX)
             # compute the hidden units' outputs 
             localInputX = self.activation[level](localInputX)
+            if(level < self.numberOfLevels-1):
+                localInputX = np.hstack((np.ones((localInputX.shape[0], 1)), localInputX))
             self.listOfHiddenRepr.append(localInputX)
  
          
@@ -247,7 +251,7 @@ class NeuralNetwork():
         delta_temp = delta_k
 
         for levels in range(self.numberOfLevels-1,0,-1):
-            delta_temp = np.matmul(delta_temp,self.listOfWeightMatrices[levels].T)
+            delta_temp = np.matmul(delta_temp,self.listOfWeightMatrices[levels][1:].T)
             
             net_j = self.listOfNet[levels-1]
             
@@ -269,7 +273,7 @@ class NeuralNetwork():
 
         for levels in range(0,self.numberOfLevels-1,1):
             if levels == 0:
-                normGradHidden = np.matmul(listOfDelta[levels].T, x).T / x.shape[0] 
+                normGradHidden = np.matmul(listOfDelta[levels].T, np.hstack((np.ones((x.shape[0], 1)), x))).T / x.shape[0] 
                 grad_hidden.append(normGradHidden)
             else:
                 normGradHidden = np.matmul(listOfDelta[levels].T, self.listOfHiddenRepr[levels-1]).T / x.shape[0] 
