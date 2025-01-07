@@ -75,7 +75,7 @@ class myModelParameters:
         rangeAlpha = [0.8, 0.9]
         rangeEpochs = [10, 20]
         """
-        
+        """
         rangeEta0 = [0.01, 0.001]
         rangeLambda = [0.0001, 0]
         rangeAlpha = [0.5]
@@ -87,12 +87,16 @@ class myModelParameters:
         rangeMiniBatch = [None,32, 64]
         
         """
-        rangeEta0 = [0.8]
+        rangeEta0 = [0.1]
         rangeLambda = [0.001]
         rangeAlpha = [0.9]
         rangeEpochs = [500]
-        rangeEtaFinal = [0.8]
-        """
+        rangeEtaFinal = [0.1]
+        rangeTau = [500]
+        rangeinitModes = ["xavier"]
+        rangeRandomRestarts = [20]
+        rangeMiniBatch = [None]
+        
 
         # instantiate the neural network  units_for_levels, activation, VariableLROption = False, eta0=0.8, eta_tau=0.5, tau=100, lambda_reg=0.01, alpha = 0.9
 
@@ -142,7 +146,7 @@ class myModelParameters:
 
                             
 
-        """
+
 
 
         # retraining model with best hiperparameters
@@ -181,6 +185,6 @@ class myModelParameters:
 
 
         return optModel, resultOptIperParam, optimalKeys, optimalValue, LogsTR, logVL
-        """
+        
 
-        return resultOptIperParam, optLogsTR
+        # return resultOptIperParam, optLogsTR

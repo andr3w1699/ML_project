@@ -494,6 +494,7 @@ class NeuralNetwork():
                     # compute NN output on validation set 
                     outVal = self.feedForeward(xValid, self.listOfWeightMatrices) 
                     
+                    """
                     if self.task == 'classification':
                         eVL = self.classification_error(yValid, outVal, activation=self.activationListName[-1])
                         logVL.append(f"Epoch : {i}, Classification Error  : {eVL}\n")
@@ -501,13 +502,36 @@ class NeuralNetwork():
                         # for regression task
                         eVL = self.mean_squared_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
-                    
+                    """
+                    """
+                    # to plot mse also on validation in MONK
+                    if self.task == 'classification':
+                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        logVL.append(f"Epoch : {i}, MSE Error on validation : {eVL}\n")
+                    else:
+                        # for regression task
+                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
+                    """
+
+                    if self.task == 'classification':
+                        eVL = self.classification_error(yValid, outVal, activation=self.activationListName[-1])
+                        classification_accuracy = 1 - eVL
+                        logVL.append(f"Epoch : {i}, Classification Accuracy on Validation : {classification_accuracy}\n")
+                    else:
+                        # for regression task                
+                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
                     
                 # keep track of training error over the epochs of training 
                 o = self.feedForeward(X, self.listOfWeightMatrices)
+                
                 e = self.mean_squared_error_loss(Y, o)
+                # logTR.append(f"Epoch : {i}, MSE : {e}\n")
 
-                logTR.append(f"Epoch : {i}, MSE : {e}\n")
+                error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
+                accuracy_training = 1 - error_training
+                logTR.append(f"Epoch : {i}, Accuracy Training : {accuracy_training}\n")
                 i += 1
                   
             else:    
@@ -521,6 +545,7 @@ class NeuralNetwork():
                     
                     outVal = self.feedForeward(xValid, self.listOfWeightMatrices) 
                     
+                    """
                     if self.task == 'classification':
                         eVL = self.classification_error(yValid, outVal, activation=self.activationListName[-1])
                         logVL.append(f"Epoch : {i}, Classification Error : {eVL}\n")
@@ -528,12 +553,38 @@ class NeuralNetwork():
                         # for regression task                
                         eVL = self.mean_squared_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
+                    """
+                    """
+                    # to plot mse also on validation in MONK
+                    if self.task == 'classification':
+                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        logVL.append(f"Epoch : {i}, MSE Error on validation : {eVL}\n")
+                    else:
+                        # for regression task
+                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
+                    """
+                    
+                    if self.task == 'classification':
+                        eVL = self.classification_error(yValid, outVal, activation=self.activationListName[-1])
+                        classification_accuracy = 1 - eVL
+                        logVL.append(f"Epoch : {i}, Classification Accuracy on Validation : {classification_accuracy}\n")
+                    else:
+                        # for regression task                
+                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
+                    
                  
                 # keep track of training error 
                 # o output of the net is already computed in feed-forward before back-prop
+                
                 e = self.mean_squared_error_loss(Y, o)
-                                
-                logTR.append(f"Epoch : {i}, MSE : {e}\n")
+                # logTR.append(f"Epoch : {i}, MSE : {e}\n")                
+                
+
+                error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
+                accuracy_training = 1 - error_training
+                logTR.append(f"Epoch : {i}, Accuracy Training : {accuracy_training}\n")
 
                 oldGrad_hidden, oldGrad_output = self.update_weights(i, grad_hidden, grad_output, oldGrad_hidden, oldGrad_output, batch_size, num_samples, use_mini_batch)
                 
