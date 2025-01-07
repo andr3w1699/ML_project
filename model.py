@@ -550,6 +550,18 @@ class NeuralNetwork():
         squared_error = np.square(diff)
         mse = np.mean(squared_error)  
         return mse
+
+    def mean_euclidean_error_loss(self, Y, O):
+        # Calculate the difference between target and output
+        diff = Y - O
+        
+        # Compute the Euclidean distances for each sample
+        euclidean_distances = np.sqrt(np.sum(np.square(diff), axis=1))
+        
+        # Calculate the mean of the Euclidean distances
+        mee = np.mean(euclidean_distances)
+        
+        return mee
     
     """
     function classification_error is used to compute classification error 

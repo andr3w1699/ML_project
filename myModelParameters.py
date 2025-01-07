@@ -76,15 +76,15 @@ class myModelParameters:
         rangeEpochs = [10, 20]
         """
         
-        rangeEta0 = [0.001, 0.01]
-        rangeLambda = [0.0001, 0.001]
-        rangeAlpha = [0.5, 0.1]
+        rangeEta0 = [0.01, 0.001]
+        rangeLambda = [0.0001, 0]
+        rangeAlpha = [0.5]
         rangeEpochs = [1000]
-        rangeEtaFinal = [0.001, 0.01]
+        rangeEtaFinal = [0.01, 0.001]
         rangeTau = [1000]
-        rangeinitModes = ["xavier", "random"]
-        rangeRandomRestarts = [10]
-        rangeMiniBatch = [None, 1, 32, 64]
+        rangeinitModes = ["xavier"]
+        rangeRandomRestarts = [20]
+        rangeMiniBatch = [None,32, 64]
         
         """
         rangeEta0 = [0.8]
@@ -126,8 +126,9 @@ class myModelParameters:
                                             else:
                                                 #for regression
                                                 result = model.predict(xValid, False, None)
-                                                valError = model.mean_squared_error_loss(yValid, result)
-                                                
+                                                #valError = model.mean_squared_error_loss(yValid, result)
+                                                # for ML cup MEE is required
+                                                valError = model.mean_euclidean_error_loss(yValid, result)
                                                 
                                             optWeights = model.getOptimalWeights()
                                             resultOptIperParam[(eta0, etaFinal, Lambda, Alpha, epochs, mode, tau, randomRestart, miniBatch)] = (trainError, valError, optWeights, model.get_list_init_weight_matrices())
