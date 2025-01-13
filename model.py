@@ -182,8 +182,8 @@ class NeuralNetwork():
 
         # if validationErrorCheck :
         #    --> initialize self.listOfWeightMatrices with a list of weight matrices passed in input
-        if self.validationErrorCheck == True : 
-            self.listOfWeightMatrices = copy.deepcopy(mdlParams.weights)
+        # if self.validationErrorCheck == True : 
+        #    self.listOfWeightMatrices = copy.deepcopy(mdlParams.weights)
 
 
     """
@@ -408,8 +408,10 @@ class NeuralNetwork():
                 # compute the momentum contribution for the hidden gradient update rule 
                 velocityHidden = self.alpha * oldGrad_hidden[j] + ((etas) * grad_hidden[j]) 
 
-            # compute penalty term for regularization
+            # compute penalty term for regularization L2
             penalty_term = self.lambda_reg * self.listOfWeightMatrices[j]
+            # Compute penalty term for L1 regularization
+            # penalty_term = self.lambda_reg * np.sign(self.listOfWeightMatrices[j])
             self.listOfWeightMatrices[j] = self.listOfWeightMatrices[j] + velocityHidden  - penalty_term
             # save old momentum contribution for next iteration
             oldGrad_hidden[j] = velocityHidden
@@ -424,6 +426,8 @@ class NeuralNetwork():
 
         # compute penalty term for regularization 
         penalty_term = self.lambda_reg * self.listOfWeightMatrices[-1]
+        # Compute penalty term for L1 regularization
+        # penalty_term = self.lambda_reg * np.sign(self.listOfWeightMatrices[-1])
         # list[-1] = last elem of the list = weights between hidden and output
         self.listOfWeightMatrices[-1] = self.listOfWeightMatrices[-1] + velocityOutput   - penalty_term 
                             
@@ -442,8 +446,10 @@ class NeuralNetwork():
     def realTraining(self, X, Y, epochs, batch_size, treshold, initMode, validationErrorCheck = False, xValid = None, yValid = None):
         
         # if no validationErrorCheck initialize a weight matrix
-        if validationErrorCheck == False : 
-            self.listOfWeightMatrices = self.initalizeWeightMatrix(initMode)
+        #if validationErrorCheck == False : 
+        #   self.listOfWeightMatrices = self.initalizeWeightMatrix(initMode)
+
+        self.listOfWeightMatrices = self.initalizeWeightMatrix(initMode)
         
         # save a deep copy of initial list of weight matrices for future use
         self.tmpStartWeights = copy.deepcopy(self.listOfWeightMatrices)
@@ -520,18 +526,20 @@ class NeuralNetwork():
                         logVL.append(f"Epoch : {i}, Classification Accuracy on Validation : {classification_accuracy}\n")
                     else:
                         # for regression task                
-                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        # eVL = self.mean_squared_error_loss(yValid, outVal)
+                        eVL = self.mean_euclidean_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
                     
                 # keep track of training error over the epochs of training 
                 o = self.feedForeward(X, self.listOfWeightMatrices)
                 
                 e = self.mean_squared_error_loss(Y, o)
-                # logTR.append(f"Epoch : {i}, MSE : {e}\n")
+                #e = self.mean_euclidean_error_loss(Y, o)
+                logTR.append(f"Epoch : {i}, MSE : {e}\n")
 
-                error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
-                accuracy_training = 1 - error_training
-                logTR.append(f"Epoch : {i}, Accuracy Training : {accuracy_training}\n")
+                #error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
+                #accuracy_training = 1 - error_training
+                #logTR.append(f"Epoch : {i}, Accuracy Training : {accuracy_training}\n")
                 i += 1
                   
             else:    
@@ -571,7 +579,8 @@ class NeuralNetwork():
                         logVL.append(f"Epoch : {i}, Classification Accuracy on Validation : {classification_accuracy}\n")
                     else:
                         # for regression task                
-                        eVL = self.mean_squared_error_loss(yValid, outVal)
+                        # eVL = self.mean_squared_error_loss(yValid, outVal)
+                        eVL = self.mean_euclidean_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
                     
                  
@@ -579,12 +588,13 @@ class NeuralNetwork():
                 # o output of the net is already computed in feed-forward before back-prop
                 
                 e = self.mean_squared_error_loss(Y, o)
-                # logTR.append(f"Epoch : {i}, MSE : {e}\n")                
+                # e = self.mean_euclidean_error_loss(Y, o)
+                logTR.append(f"Epoch : {i}, MSE : {e}\n")                
                 
 
-                error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
-                accuracy_training = 1 - error_training
-                logTR.append(f"Epoch : {i}, Accuracy Training : {accuracy_training}\n")
+                #error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
+                #accuracy_training = 1 - error_training
+                #logTR.append(f"Epoch : {i}, Accuracy Training : {accuracy_training}\n")
 
                 oldGrad_hidden, oldGrad_output = self.update_weights(i, grad_hidden, grad_output, oldGrad_hidden, oldGrad_output, batch_size, num_samples, use_mini_batch)
                 

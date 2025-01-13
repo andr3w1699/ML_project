@@ -15,10 +15,10 @@ modelParametersFile = "./finalModel.txt"
 
 
 # Carica il file 
-file_path = "./dataset/monk/monks-3.train"
+file_path = "./dataset/monk/monks-1.train"
 data = pd.read_csv(file_path, sep=" ", header=None, skipinitialspace=True)
 
-path_test = "./dataset/monk/monks-3.test"
+path_test = "./dataset/monk/monks-1.test"
 test_set = pd.read_csv(path_test, sep=" ", header=None, skipinitialspace=True)
 
 # drop last column not useful 

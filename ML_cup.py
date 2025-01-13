@@ -49,12 +49,86 @@ testSet =  data.iloc[int(trainingPercentage):, :]
 #targetTest = targetTest.to_numpy() 
 #inputTest = inputTest.to_numpy()
 
-selectionSet = selectionSet.to_numpy()
-testSet = testSet.to_numpy()
+#selectionSet = selectionSet.to_numpy()
+#testSet = testSet.to_numpy()
+
+
+# split selectionSet in Training Set & validation set
+
+# take row number 
+numsample = selectionSet.shape[0]
+
+#select 80 % of rows
+trainingPercentage = numsample * 0.8
+
+
+# take the rows for k-fold validation 
+TrainingSet = selectionSet.iloc[:int(trainingPercentage), :]
+x_train = TrainingSet.iloc[:, :-3]
+y_train = TrainingSet.iloc[:, -3:] 
+x_train = x_train.to_numpy()
+y_train = y_train.to_numpy()
+
+# take the row for final testing 
+ValidationSet =  selectionSet.iloc[int(trainingPercentage):, :]
+x_valid = ValidationSet.iloc[:, :-3]
+y_valid = ValidationSet.iloc[:, -3:] 
+x_valid = x_valid.to_numpy()
+y_valid = y_valid.to_numpy()
+
+# create model parameter
+prm =  mmp.myModelParameters(None, [12,24,24,24,3], ['elu','elu','elu','linear'], True, 0.001, 0.001, 2000 , 0, 0.9, True , "regression")
+# create model 
+model = NeuralNetwork(prm)
+# train the model
+trainError, logVL, LogsTR = model.train(x_train, y_train, 2000, 32, 0.0001, "xavier", 20, True, x_valid, y_valid)
+# make the prediction on training
+prediction_on_training = model.predict(x_train, False, None)
+# make the prediction on validation
+prediction_on_validation = model.predict(x_valid, False, None)
+# compute MSE and MEE on training and validation 
+MSE_training = model.mean_squared_error_loss(y_train, prediction_on_training)
+MSE_validation = model.mean_squared_error_loss(y_valid, prediction_on_validation)
+MEE_training = model.mean_euclidean_error_loss(y_train, prediction_on_training)
+MEE_validation = model.mean_euclidean_error_loss(y_valid, prediction_on_validation)
+
+print(F"MSE on training: {MSE_training} vs MSE on validation: {MSE_validation}\nMEE on training: {MEE_training} vs MEE on validation: {MEE_validation}")
+
+xasses = []
+yasses = []
+xassesVL = []
+yassesVL = []
+        
+for str in logVL:
+    Mytuple = str.split(",")
+            
+    xassesVL.append(int(Mytuple[0].split(":")[1]))
+    yassesVL.append(float(Mytuple[1].split(":")[1]))
+        
+        
+for str in LogsTR:
+    Mytuple = str.split(",")
+            
+    xasses.append(int(Mytuple[0].split(":")[1]))
+    yasses.append(float(Mytuple[1].split(":")[1]))
+
+#plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MEE on TR")
+#plt.plot(np.array(xassesVL), np.array(yassesVL),label="MEE on VL")        
+plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MSE on TR")
+plt.plot(np.array(xassesVL), np.array(yassesVL),label="MSE on VL")
+plt.legend()
+        
+#plt.title("MEE TR vs MEE Validation")
+plt.title("MSE TR vs MSE Validation")
+plt.xlabel("epochs")
+# plt.ylabel("Mean Euclidean Error (MEE)")
+plt.ylabel("Mean Squared Error (MSE)")
+plt.grid(True)
+plt.show()
 
 
 
-
+"""
 # number of partitions
 k = 4
 testSplits = mmp.myModelParameters.kFoldPartition(selectionSet, k)
@@ -63,6 +137,8 @@ listOfDict = []
 listOfLog = []
 
 validationFromIperParam = {}
+
+
 
 for numSplit, kfolSplit in enumerate(testSplits):
 
@@ -77,7 +153,7 @@ for numSplit, kfolSplit in enumerate(testSplits):
     x_Validation = vlSetFold[:, :-3]
     y_Validation = vlSetFold[:, -3:]
 
-    resultOptIperParam, log = mmp.myModelParameters.doGridSearch(x_Training, x_Validation, y_Training, y_Validation, [12,24,3], ['elu','linear'], task = 'regression')
+    resultOptIperParam, log = mmp.myModelParameters.doGridSearch(x_Training, x_Validation, y_Training, y_Validation, [12,24,24,24,3], ['elu','elu','elu','linear'], task = 'regression')
 
     for key in resultOptIperParam.keys():
         valError = resultOptIperParam[key][1]
@@ -135,5 +211,4 @@ for index, log in enumerate(listOfLog, start=1):
         file.write(log_content)  # Scrive il contenuto del log nel file
         print(f"Salvato: {file_path}")
 
-
-
+"""

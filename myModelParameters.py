@@ -76,26 +76,28 @@ class myModelParameters:
         rangeEpochs = [10, 20]
         """
         """
-        rangeEta0 = [0.01, 0.001]
-        rangeLambda = [0.0001, 0]
-        rangeAlpha = [0.5]
+        rangeEta0 = [0.001, 0.0001]
+        rangeLambda = [0.00001, 0.0001, 0]
+        rangeAlpha = [0.5, 0.9]
+        rangeEpochs = [2000]
+        rangeEtaFinal = [0.001, 0.0001]
+        rangeTau = [2000]
+        rangeinitModes = ["xavier"]
+        rangeRandomRestarts = [20]
+        rangeMiniBatch = [32]
+        """
+        
+        
+        rangeEta0 = [0.1]
+        rangeLambda = [0.0]
+        rangeAlpha = [0.9]
         rangeEpochs = [1000]
-        rangeEtaFinal = [0.01, 0.001]
+        rangeEtaFinal = [0.1]
         rangeTau = [1000]
         rangeinitModes = ["xavier"]
-        rangeRandomRestarts = [20]
-        rangeMiniBatch = [None,32, 64]
-        
-        """
-        rangeEta0 = [0.1]
-        rangeLambda = [0.001]
-        rangeAlpha = [0.9]
-        rangeEpochs = [500]
-        rangeEtaFinal = [0.1]
-        rangeTau = [500]
-        rangeinitModes = ["xavier"]
-        rangeRandomRestarts = [20]
+        rangeRandomRestarts = [1]
         rangeMiniBatch = [None]
+        
         
 
         # instantiate the neural network  units_for_levels, activation, VariableLROption = False, eta0=0.8, eta_tau=0.5, tau=100, lambda_reg=0.01, alpha = 0.9
@@ -148,7 +150,7 @@ class myModelParameters:
 
 
 
-
+        
         # retraining model with best hiperparameters
         # weights, units_for_levels, activation, VariableLROption = False, eta0=0.8, eta_tau=0.5, tau=100, lambda_reg=0.01, alpha = 0.9, validationErrorCheck = False, task = None
         modelToBuildValidationError = NeuralNetwork(myModelParameters(startWeightsForOptimalTraining, units_for_levels, activation, True, optimalKeys[0], optimalKeys[1], 100, optimalKeys[2], optimalKeys[3], True, task = 'classification'))
@@ -187,4 +189,4 @@ class myModelParameters:
         return optModel, resultOptIperParam, optimalKeys, optimalValue, LogsTR, logVL
         
 
-        # return resultOptIperParam, optLogsTR
+        #return resultOptIperParam, optLogsTR
