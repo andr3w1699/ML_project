@@ -519,7 +519,7 @@ class NeuralNetwork():
                         eVL = self.mean_squared_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
                     """
-
+                    
                     if self.task == 'classification':
                         eVL = self.classification_error(yValid, outVal, activation=self.activationListName[-1])
                         classification_accuracy = 1 - eVL
@@ -528,14 +528,14 @@ class NeuralNetwork():
                         # for regression task                
                         # eVL = self.mean_squared_error_loss(yValid, outVal)
                         eVL = self.mean_euclidean_error_loss(yValid, outVal)
-                        logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
+                        logVL.append(f"Epoch : {i}, MEE : {eVL}\n")
                     
                 # keep track of training error over the epochs of training 
                 o = self.feedForeward(X, self.listOfWeightMatrices)
                 
                 e = self.mean_squared_error_loss(Y, o)
-                #e = self.mean_euclidean_error_loss(Y, o)
-                logTR.append(f"Epoch : {i}, MSE : {e}\n")
+                err = self.mean_euclidean_error_loss(Y, o)
+                logTR.append(f"Epoch : {i}, MEE : {err}\n")
 
                 #error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
                 #accuracy_training = 1 - error_training
@@ -571,8 +571,8 @@ class NeuralNetwork():
                         # for regression task
                         eVL = self.mean_squared_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
-                    """
                     
+                    """
                     if self.task == 'classification':
                         eVL = self.classification_error(yValid, outVal, activation=self.activationListName[-1])
                         classification_accuracy = 1 - eVL
@@ -581,15 +581,15 @@ class NeuralNetwork():
                         # for regression task                
                         # eVL = self.mean_squared_error_loss(yValid, outVal)
                         eVL = self.mean_euclidean_error_loss(yValid, outVal)
-                        logVL.append(f"Epoch : {i}, MSE : {eVL}\n")
+                        logVL.append(f"Epoch : {i}, MEE : {eVL}\n")
                     
                  
                 # keep track of training error 
                 # o output of the net is already computed in feed-forward before back-prop
                 
                 e = self.mean_squared_error_loss(Y, o)
-                # e = self.mean_euclidean_error_loss(Y, o)
-                logTR.append(f"Epoch : {i}, MSE : {e}\n")                
+                err = self.mean_euclidean_error_loss(Y, o)
+                logTR.append(f"Epoch : {i}, MRE : {err}\n")                
                 
 
                 #error_training = self.classification_error(Y, o, activation=self.activationListName[-1])

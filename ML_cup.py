@@ -77,11 +77,11 @@ x_valid = x_valid.to_numpy()
 y_valid = y_valid.to_numpy()
 
 # create model parameter
-prm =  mmp.myModelParameters(None, [12,24,24,24,3], ['elu','elu','elu','linear'], True, 0.001, 0.001, 2000 , 0, 0.9, True , "regression")
+prm =  mmp.myModelParameters(None, [12,24,24,3], ['elu','elu','linear'], True, 0.015, 0.02, 1000 , 0.00001, 0.7, True , "regression")
 # create model 
 model = NeuralNetwork(prm)
 # train the model
-trainError, logVL, LogsTR = model.train(x_train, y_train, 2000, 32, 0.0001, "xavier", 20, True, x_valid, y_valid)
+trainError, logVL, LogsTR = model.train(x_train, y_train, 1000, 16, 0.0001, "xavier", 20, True, x_valid, y_valid)
 # make the prediction on training
 prediction_on_training = model.predict(x_train, False, None)
 # make the prediction on validation
@@ -112,17 +112,17 @@ for str in LogsTR:
     xasses.append(int(Mytuple[0].split(":")[1]))
     yasses.append(float(Mytuple[1].split(":")[1]))
 
-#plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MEE on TR")
-#plt.plot(np.array(xassesVL), np.array(yassesVL),label="MEE on VL")        
-plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MSE on TR")
-plt.plot(np.array(xassesVL), np.array(yassesVL),label="MSE on VL")
+plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MEE on TR")
+plt.plot(np.array(xassesVL), np.array(yassesVL),label="MEE on VL")        
+#plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MSE on TR")
+#plt.plot(np.array(xassesVL), np.array(yassesVL),label="MSE on VL")
 plt.legend()
         
-#plt.title("MEE TR vs MEE Validation")
-plt.title("MSE TR vs MSE Validation")
+plt.title("MEE TR vs MEE Validation")
+#plt.title("MSE TR vs MSE Validation")
 plt.xlabel("epochs")
-# plt.ylabel("Mean Euclidean Error (MEE)")
-plt.ylabel("Mean Squared Error (MSE)")
+plt.ylabel("Mean Euclidean Error (MEE)")
+#plt.ylabel("Mean Squared Error (MSE)")
 plt.grid(True)
 plt.show()
 

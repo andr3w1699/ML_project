@@ -15,10 +15,10 @@ modelParametersFile = "./finalModel.txt"
 
 
 # Carica il file 
-file_path = "./dataset/monk/monks-1.train"
+file_path = "./dataset/monk/monks-3.train"
 data = pd.read_csv(file_path, sep=" ", header=None, skipinitialspace=True)
 
-path_test = "./dataset/monk/monks-1.test"
+path_test = "./dataset/monk/monks-3.test"
 test_set = pd.read_csv(path_test, sep=" ", header=None, skipinitialspace=True)
 
 # drop last column not useful 
@@ -87,7 +87,7 @@ else :
         
         #  optModel, resultOptIperParam, optimalKeys, optimalValue, LogsTR, logVL
 
-        modelWithGridSearch, result, optimalKeys, optimalValue, optLogsTR, logVL = mmp.myModelParameters.doGridSearch(x, x_test, y, y_test, [17,2,1], ['sigmoid', 'linear'], task = 'classification')
+        modelWithGridSearch, result, optimalKeys, optimalValue, optLogsTR, logVL = mmp.myModelParameters.doGridSearch(x, x_test, y, y_test, [17,4,1], ['sigmoid', 'linear'], task = 'classification')
         xasses = []
         yasses = []
         xassesVL = []
@@ -106,12 +106,18 @@ else :
             xasses.append(int(Mytuple[0].split(":")[1]))
             yasses.append(float(Mytuple[1].split(":")[1]))
         
-        plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed")
-        plt.plot(np.array(xassesVL), np.array(yassesVL))
-        plt.legend("TR error", "VL error")
+        plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed",  label="Accuracy TR")
+        plt.plot(np.array(xassesVL), np.array(yassesVL), label="Accuracy TS")
+        plt.legend()
         
-        #plt.title("Validation Set Error")
-        plt.xlabel("eposchs")
+
+        #plt.title("MEE TR vs MEE Validation")
+        #plt.title("MSE TR vs MSE TEST")
+        plt.title("Accuracy TR vs Accuracy TEST")
+        plt.xlabel("epochs")
+        # plt.ylabel("Mean Euclidean Error (MEE)")
+        # plt.ylabel("Mean Squared Error (MSE)")
+        plt.ylabel("Classification Accuracy")
         plt.grid(True)
         plt.show()
         

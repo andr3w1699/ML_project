@@ -88,14 +88,14 @@ class myModelParameters:
         """
         
         
-        rangeEta0 = [0.1]
-        rangeLambda = [0.0]
-        rangeAlpha = [0.9]
+        rangeEta0 = [0.5]
+        rangeLambda = [0.01]
+        rangeAlpha = [0.8]
         rangeEpochs = [1000]
-        rangeEtaFinal = [0.1]
+        rangeEtaFinal = [0.5]
         rangeTau = [1000]
         rangeinitModes = ["xavier"]
-        rangeRandomRestarts = [1]
+        rangeRandomRestarts = [20]
         rangeMiniBatch = [None]
         
         
@@ -159,6 +159,14 @@ class myModelParameters:
         result = modelToBuildValidationError.predict_class(xValid, False, activation[-1], None)
         valError = modelToBuildValidationError.classification_error(yValid, result, activation[-1])
         
+        result_training = modelToBuildValidationError.predict_class(xTrain, False, activation[-1], None)
+        train_Error = modelToBuildValidationError.classification_error(yTrain, result_training, activation[-1])
+
+        print(f"****************************************************************\n")
+        print(f"****************************************************************\n")
+        print(f"Train Error :\n")
+        print(f"{train_Error}\n")
+
         print(f"****************************************************************\n")
         print(f"****************************************************************\n")
         print(f"valError :\n")
