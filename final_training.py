@@ -5,6 +5,7 @@ import numpy as np
 import myModelParameters as mmp
 import os 
 import matplotlib.pyplot as plt
+import time 
 
 
 # Carica il file del dataset di training
@@ -56,7 +57,7 @@ prm =  mmp.myModelParameters(None, [12,24,3], ['elu','linear'], True, 0.01, 0.01
 # create model 
 model = NeuralNetwork(prm)
 # train the model - For final retraining we have no validation 
-trainError, logVL, LogsTR = model.train(X_selection, Y_selection, 1000, None, 0.0001, "xavier", 20, True, X_selection, Y_selection)
+trainError, logVL, LogsTR = model.train(X_selection, Y_selection, 1000, None, 0.0001, "xavier", 20, True, X_Test, Y_Test)
 # make the prediction on training
 prediction_on_training = model.predict(X_selection, False, None)
 # make the prediction on validation
@@ -75,7 +76,7 @@ print(F"MSE on training(Selection Set): {MSE_training} vs MSE on Internal Test: 
 
 print(F"RISK ASSESMENT:\nEstimated Error on internal test set, MSE: {MSE_test}, MEE:{MEE_test}")
 
-"""
+
 xasses = []
 yasses = []
 xassesVL = []
@@ -95,20 +96,18 @@ for str in LogsTR:
     yasses.append(float(Mytuple[1].split(":")[1]))
 
 plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MEE on TR")
-#plt.plot(np.array(xassesVL), np.array(yassesVL),label="MEE on TS")        
+plt.plot(np.array(xassesVL), np.array(yassesVL),label="MEE on TS")        
 #plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MSE on TR")
 #plt.plot(np.array(xassesVL), np.array(yassesVL),label="MSE on VL")
 plt.legend()
         
-plt.title("Learning curve retraining on Selection Set")
+plt.title("MEE on TR+VL vs MEE on TS")
 #plt.title("MSE TR vs MSE Validation")
 plt.xlabel("epochs")
-plt.ylabel("Mean Euclidean Error (MEE)")
-#plt.ylabel("Mean Squared Error (MSE)")
+#plt.ylabel("Mean Euclidean Error (MEE)")
+plt.ylabel("Mean Squared Error (MSE)")
 plt.grid(True)
 plt.show()
-
-"""
 
 # take the entire dataset for final retraining after risk assesment 
 
@@ -117,14 +116,19 @@ X_training = data_training.iloc[:, :-3].to_numpy()
 
 # create model - use the same hyper param since the model 
 model_final = NeuralNetwork(prm)
+start_time = time.time()
 # train the model - For final retraining we have no validation 
 trainError, logVL, LogsTR = model_final.train(X_training, Y_training, 1000, None, 0.0001, "xavier", 20, True, X_training, Y_training)
+end_time = time.time()
 # make the prediction on training
 prediction_on_final_training = model_final.predict(X_training, False, None)
 MSE_training_final = model_final.mean_squared_error_loss(Y_training, prediction_on_final_training)
 MEE_training_final = model_final.mean_euclidean_error_loss(Y_training, prediction_on_final_training)
+duration = end_time - start_time
 
 print(f"Final retraining:\nMSE: {MSE_training_final}, MEE:{MEE_training_final}")
+print(f"*****************************************************************")
+print(f"Duration time of the training of the final model: {duration}")
 
 
 xasses = []
@@ -145,7 +149,7 @@ for str in LogsTR:
     xasses.append(int(Mytuple[0].split(":")[1]))
     yasses.append(float(Mytuple[1].split(":")[1]))
 
-plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MEE on TR")
+plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MEE final retraining")
 #plt.plot(np.array(xassesVL), np.array(yassesVL),label="MEE on TS")        
 #plt.plot(np.array(xasses), np.array(yasses), linestyle="dashed", label="MSE on TR")
 #plt.plot(np.array(xassesVL), np.array(yassesVL),label="MSE on VL")
@@ -159,4 +163,22 @@ plt.ylabel("Mean Euclidean Error (MEE)")
 plt.grid(True)
 plt.show()
 
+# prepare for the prediction on blind test set 
+print(data_blind_test)
+# drop ID column 
+data_blind_test = data_blind_test.drop(data_blind_test.columns[0], axis=1)
+# convert to numpy array 
+input_blind_test = data_blind_test.to_numpy()
+# make the prediction on the blind test set 
+prediction_blind_test = model_final.predict(input_blind_test, False, None)
+print(f"************Prediction on blind test set***************")
+print(f"*******************************************************")
 
+path_prediction_blind_test = "./LTR_team_ML-CUP24-TS.csv"
+df = pd.DataFrame(prediction_blind_test)
+
+# Adjust the index to start from 1
+df.index = df.index + 1
+
+df.to_csv(path_prediction_blind_test, index=True, header=False)
+print(f"Succesfully saved on file: {path_prediction_blind_test}")

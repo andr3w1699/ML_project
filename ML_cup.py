@@ -77,11 +77,11 @@ x_valid = x_valid.to_numpy()
 y_valid = y_valid.to_numpy()
 
 # create model parameter
-prm =  mmp.myModelParameters(None, [12,24,24,3], ['elu','elu','linear'], True, 0.015, 0.02, 1000 , 0.00001, 0.7, True , "regression")
+prm =  mmp.myModelParameters(None, [12,7,5,3], ['elu','elu','linear'], True, 0.001, 0.001, 1000 , 0.00001, 0.6, True , "regression")
 # create model 
 model = NeuralNetwork(prm)
 # train the model
-trainError, logVL, LogsTR = model.train(x_train, y_train, 1000, 16, 0.0001, "xavier", 20, True, x_valid, y_valid)
+trainError, logVL, LogsTR = model.train(x_train, y_train, 1000, 64, 0.0001, "xavier", 20, True, x_valid, y_valid)
 # make the prediction on training
 prediction_on_training = model.predict(x_train, False, None)
 # make the prediction on validation

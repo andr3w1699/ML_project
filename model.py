@@ -526,7 +526,7 @@ class NeuralNetwork():
                         logVL.append(f"Epoch : {i}, Classification Accuracy on Validation : {classification_accuracy}\n")
                     else:
                         # for regression task                
-                        # eVL = self.mean_squared_error_loss(yValid, outVal)
+                        #eVL = self.mean_squared_error_loss(yValid, outVal)
                         eVL = self.mean_euclidean_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MEE : {eVL}\n")
                     
@@ -579,7 +579,7 @@ class NeuralNetwork():
                         logVL.append(f"Epoch : {i}, Classification Accuracy on Validation : {classification_accuracy}\n")
                     else:
                         # for regression task                
-                        # eVL = self.mean_squared_error_loss(yValid, outVal)
+                        #eVL = self.mean_squared_error_loss(yValid, outVal)
                         eVL = self.mean_euclidean_error_loss(yValid, outVal)
                         logVL.append(f"Epoch : {i}, MEE : {eVL}\n")
                     
@@ -589,7 +589,7 @@ class NeuralNetwork():
                 
                 e = self.mean_squared_error_loss(Y, o)
                 err = self.mean_euclidean_error_loss(Y, o)
-                logTR.append(f"Epoch : {i}, MRE : {err}\n")                
+                logTR.append(f"Epoch : {i}, MEE : {err}\n")                
                 
 
                 #error_training = self.classification_error(Y, o, activation=self.activationListName[-1])
